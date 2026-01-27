@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request
+from flask import flash
+from flask_wtf.csrf import CSRFProtect
+
+import forms
 
 app = Flask(__name__)
+app.secret_key = 'clave secreta'
+csrf = CSRFProtect()
 
 
 @app.route('/')
@@ -18,9 +24,23 @@ def alumnos():
     return render_template('alumnos.html')
 
 
-@app.route('/usuario')
+@app.route('/usuario', methods=['GET','POST'])
 def usuario():
-    return render_template('usuario.html')
+    mat=0
+    nom=''
+    apa=''
+    ama=''
+    correo=''
+    usuario_class = forms.UserForm(request.form)
+    if request.method == 'POST' and usuario_class.validate():
+        mat = usuario_class.matricula.data
+        nom = usuario_class.nombre.data
+        apa = usuario_class.apaterno.data
+        ama = usuario_class.amaterno.data
+        correo = usuario_class.email.data
+
+    return render_template('usuario.html', form=usuario_class, mat=mat,
+                            nom=nom, apa=apa, ama=ama, correo=correo)
 
 
 @app.route('/hola')
@@ -94,4 +114,5 @@ def resultado():
     return f"<h1>El resultado es: {resultado}</h1>"
 
 if __name__ == '__main__':
+    csrf.init_app(app)
     app.run(debug=True)
