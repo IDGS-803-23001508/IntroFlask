@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <title>Cinepolis</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .cine-bg {
+            background: url('/static/img/cinepolis.jpg') center/cover no-repeat;
+            height: 100vh;
+            width: 100vw;
+            overflow-y: auto;
+        }
+
+        .panel {
+            border: 3px solid white;
+            padding: 20px 15px 15px 15px;
+            color: white;
+            background: rgba(255, 255, 255, 0);
+            border-radius: 8px;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .panel-title {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #0b3b8c;
+            display: inline-block;
+            padding: 5px 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .logo-text {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #FFD700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: white;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    {% import "_macros.html" as macros %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger alert-dismissible">
+        {{message}}
+    </div>
+    {% endfor %}
+    {% endif%}
+    {% endwith %}
+    {% block content %}
+    {% endblock %}
+
+    <article class="cine-bg d-flex flex-column justify-content-center align-items-center">
+        <div class="container-fluid px-5 py-4">
+            <form action="/cinepolis" method="post" novalidate>
+                {{ form.csrf_token }}
+                <input type="hidden" name="csrf_token" value="{{csrf_token() }}">
+
+                <div class="row align-items-start g-4">
+                    <div class="col-md-4">
+                        <div class="panel">
+                            <span class="panel-title">Entradas</span>
+                            {{ macros.campoNuevo(form.nombre, class='form-control') }}
+                            {{ macros.campoNuevo(form.compradores, class='form-control') }}
+
+                            <div class="mb-2">
+                                {{macros.campoNuevo(form.cineco, class="form-control")}}
+                            </div>
+
+                            {{ macros.campoNuevo(form.boletos, class='form-control') }}
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+                        <div class="logo-text">Cinepolis</div>
+                        <div class="subtitle">La capital del cine</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="panel">
+                            <span class="panel-title">Salidas</span>
+                            <br>
+                            <label class="form-label">Valor a pagar</label>
+                            <input type="number" class="form-control" value="{{ Total }}" readonly/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-4">
+                        <div class="panel text-center">
+                            <span class="panel-title">Acciones</span>
+                            <div class="d-flex justify-content-around mt-3">
+                                <button type="submit" class="btn btn-light">
+                                    <i class="bi bi-check-circle"></i> Procesar
+                                </button>
+                                <button type="button" onclick="window.location.href='/cinepolis'" class="btn btn-light">
+                                    <i class="bi bi-x-circle"></i> Salir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </article>
+
+    <script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
